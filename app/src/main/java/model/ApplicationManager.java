@@ -1,26 +1,37 @@
 package model;
 
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.GET;
 
 public class ApplicationManager {
-     User user = new User();
-    public void getDataFromApi(User user) {
-        ApiInterface apiInterface = ApiClient.sendRequest(user).create(ApiInterface.class);
-        Call<User> call = apiInterface.createAccount(user);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+     List<GetImages> getImagesList = new ArrayList<>();
+     public List<GetImages> getDataFromApi() {
+        ApiInterface apiInterface = ApiClient.sendRequest().create(ApiInterface.class);
+         Call<List<GetImages>> call = apiInterface.getDataFromApi();
+         call.enqueue(new Callback<List<GetImages>>() {
+             @Override
+             public void onResponse(Call<List<GetImages>> call, Response<List<GetImages>> response) {
+                 getImagesList = response.body();
+             }
 
-            }
+             @Override
+             public void onFailure(Call<List<GetImages>> call, Throwable t) {
+                 t.printStackTrace();
+             }
+         });
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
+         return null;
+     }
 
-            }
-        });
+    public void showProgressBar() {
+
     }
 }
