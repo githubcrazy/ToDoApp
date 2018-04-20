@@ -12,8 +12,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.ApiClient;
+import model.ApiInterface;
 import model.ApplicationManager;
 import model.GetImages;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DataFromApiFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -24,18 +29,32 @@ public class DataFromApiFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_data_api , null);
+        return inflater.inflate(R.layout.fragment_data_api , container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         getImagesList = new ArrayList<>();
-        recyclerViewAdapter = new RecyclerViewAdapter(getActivity(),getImagesList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerViewAdapter = new RecyclerViewAdapter(getActivity(),getImagesList);
         recyclerView.setAdapter(recyclerViewAdapter);
-        getImagesList = applicationManager.getDataFromApi();
-        recyclerViewAdapter.setData(getImagesList);
+        ApiInterface apiInterface = ApiClient.sendRequest().create(ApiInterface.class);
+        Call<List<GetImages>> call = apiInterface.getDataFromApi();
+        call.enqueue(new Callback<List<GetImages>>() {
+            @Override
+            public void onResponse(Call<List<GetImages>> call, Response<List<GetImages>> response) {
+                getImagesList = response.body();
+                recyclerViewAdapter.setData(getImagesList);
+            }
+
+            @Override
+            public void onFailure(Call<List<GetImages>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
     }
 }

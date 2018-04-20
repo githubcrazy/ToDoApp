@@ -25,6 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setData(List<GetImages> getImagesList) {
         this.getImagesList = getImagesList;
+        notifyDataSetChanged();
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,6 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Glide.with(context).load(getImagesList.get(position).getUrl()).into(holder.imageFromApi);
+        holder.titleForImage.setText(getImagesList.get(position).getTitle());
     }
 
     @Override

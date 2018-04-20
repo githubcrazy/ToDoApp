@@ -8,6 +8,13 @@
     tools:context="com.example.ishanpant.todoapp.NavDrawerActivity"
     tools:showIn="@layout/app_bar_nav_drawer">
 
+    <FrameLayout
+        android:id="@+id/activityContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
 
 
 </RelativeLayout>

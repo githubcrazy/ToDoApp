@@ -32,7 +32,7 @@ public class ToDoActivity extends AppCompatActivity {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                applicationManager.getDataFromApi(user);
+                /*applicationManager.getDataFromApi(user);*/
                 startActivity(new Intent(ToDoActivity.this,MainActivity.class));
             }
         });
