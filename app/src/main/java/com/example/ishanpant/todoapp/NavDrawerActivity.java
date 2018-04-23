@@ -19,7 +19,6 @@ import android.view.MenuItem;
 
 public class NavDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +26,7 @@ public class NavDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_nav_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        initializeRecyclerView();
         displayData();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -49,12 +38,14 @@ public class NavDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void initializeRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewActivity);
-    }
-
     private void displayData() {
-
+        Fragment fragment = new DisplayDataFragment();
+        if(fragment != null) {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(R.id.activityContainer, fragment);
+            ft.commit();
+        }
     }
 
     @Override
@@ -95,11 +86,12 @@ public class NavDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
+        Fragment frag = null;
 
         if (id == R.id.show_images) {
             fragment = new DataFromApiFragment();
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.show_deleted_items) {
+            frag = new DeletedItemsFrag();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -114,6 +106,13 @@ public class NavDrawerActivity extends AppCompatActivity
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.activityContainer,fragment);
+            fragmentTransaction.commit();
+        }
+
+        if(frag != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.activityContainer, frag);
             fragmentTransaction.commit();
         }
 

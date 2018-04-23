@@ -7,18 +7,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
-    private static final String DBName = "database.db";
-    private static final int DBVersion = 1;
+    public static final String DBName = "database.db";
+    public static final int DBVersion = 1;
 
-    private static final String USER_TABLE = "remindersTable";
-    private static final String COLUMN_ID = "_id";
-    private static final String COLUMN_NAME = "remindActivities";
+    public static final String USER_TABLE = "remindersTable";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "remindActivities";
 
     public static final String CREATE_TABLE = "CREATE TABLE " + USER_TABLE + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_NAME + " TEXT NOT NULL" + ")";
 
-    public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DBName, factory, DBVersion);
+    public SqliteHelper(Context context) {
+        super(context, DBName, null, DBVersion);
     }
 
     @Override
@@ -38,16 +38,5 @@ public class SqliteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME,remindActivities);
         long id = sqLiteDatabase.insert(USER_TABLE,null,values);
         sqLiteDatabase.close();
-    }
-
-    public Cursor getActivityInFragment() {
-        String remindActivities;
-        String selectQuery = "select * from " + USER_TABLE;
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
     }
 }

@@ -25,8 +25,8 @@ public class NotesAndListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         toDoActivitiesCardView = view.findViewById(R.id.to_do_activities_card_view);
         activityToBeDoneTextView = view.findViewById(R.id.activity_to_be_done_text_view);
-        sqliteHelper = new SqliteHelper(getActivity(),null,null,1);
-        Cursor c = sqliteHelper.getActivityInFragment();
-        activityToBeDoneTextView.setText(String.valueOf(c));
+        /*sqliteHelper = new SqliteHelper(getActivity(),null,null,1);*/
+        /*Cursor c = sqliteHelper.getActivityInFragment();
+        activityToBeDoneTextView.setText(String.valueOf(c));*/
     }
 }
