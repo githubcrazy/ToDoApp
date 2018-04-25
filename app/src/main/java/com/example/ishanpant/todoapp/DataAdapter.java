@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,7 +49,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
         db = sqliteHelper.getWritableDatabase();
         holder.activityToBeDone.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setMessage("Are you sure you want to delete?");
                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
@@ -56,11 +58,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
                         showDeletedItems = new ShowDeletedItems(context);
                         showDeletedItems.addDeletedItems(holder.activityToBeDone.getText().toString());
                         Toast.makeText(context, "Deleted Items Added Successfully...", Toast.LENGTH_LONG).show();
-
-                        long id = cursor.getLong(cursor.getColumnIndex(SqliteHelper.COLUMN_ID));
-                        holder.activityToBeDone.setTag(id);
-                        removeItems(id , holder);
-
+                        removeItems(holder);
                     }
                 });
                 alertDialog.show();
@@ -68,9 +66,13 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
         });
     }
 
-    private void removeItems(long id,MyViewHolder viewHolder) {
-        viewHolder.activityToBeDone.getTag();
-        db.delete(SqliteHelper.USER_TABLE, SqliteHelper.COLUMN_ID + "=" + id, null);
+    private void removeItems(MyViewHolder holder) {
+        String whereArgs[] = {holder.activityToBeDone.getText().toString()};
+        db.delete(SqliteHelper.USER_TABLE, SqliteHelper.COLUMN_NAME + "=?" , whereArgs);
+        swapCursor(sqliteHelper.getReminders());
+    }
+    private void removeItemsFromRecyclerView(int position) {
+            notifyItemRemoved(position);
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -92,10 +94,36 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
         private TextView activityToBeDone;
         private CardView toDoActivityCardView;
 
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(final View itemView) {
             super(itemView);
             activityToBeDone = (TextView) itemView.findViewById(R.id.activity_to_be_done_text_view);
             toDoActivityCardView = (CardView) itemView.findViewById(R.id.to_do_activities_card_view);
+          /*  itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    removeItemsFromRecyclerView(getLayoutPosition());
+                   AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    alertDialog.setMessage("Are you sure you want to delete?");
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                            showDeletedItems = new ShowDeletedItems(context);
+                            showDeletedItems.addDeletedItems(activityToBeDone.getText().toString());
+                            Toast.makeText(context, "Deleted Items Added Successfully...", Toast.LENGTH_LONG).show();
+
+                            long id = cursor.getLong(cursor.getColumnIndex(SqliteHelper.COLUMN_ID));
+
+                            removeItems(id);
+
+                          Toast.makeText(context,"Position is :"+ getLayoutPosition(),Toast.LENGTH_LONG).show();
+                       }
+                   });
+                    alertDialog.show();
+                    return false;
+                }
+            });*/
         }
     }
 }

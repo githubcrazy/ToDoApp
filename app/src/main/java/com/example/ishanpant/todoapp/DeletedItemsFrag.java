@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class DeletedItemsFrag extends Fragment {
     private RecyclerView deletedItemsRecyclerView;
     private SQLiteDatabase sqLiteDatabase;
     private ShowDeletedItems showDeletedItems;
+    private DeletedItemsAdapter deletedItemsAdapter;
 
     @Nullable
     @Override
@@ -33,22 +35,30 @@ public class DeletedItemsFrag extends Fragment {
         showDeletedItems = new ShowDeletedItems(getActivity());
         sqLiteDatabase = showDeletedItems.getReadableDatabase();
         setUpRecyclerViewForDeletedItems(view);
+         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                removeDeletedItemForEver((long) viewHolder.itemView.getTag());
+            }
+        }).attachToRecyclerView(deletedItemsRecyclerView);
+    }
+
+    private void removeDeletedItemForEver(long id) {
+        sqLiteDatabase.delete(ShowDeletedItems.Table_Name,ShowDeletedItems.Column_Id + "=" + id,null);
+        deletedItemsAdapter.swapCursorForDeletedItems(showDeletedItems.getDeletedItems());
     }
 
     private void setUpRecyclerViewForDeletedItems(View view) {
         deletedItemsRecyclerView = view.findViewById(R.id.recyclerViewForDeletedItems);
         LinearLayoutManager linear = new LinearLayoutManager(getActivity());
         deletedItemsRecyclerView.setLayoutManager(linear);
-        DeletedItemsAdapter deletedItemsAdapter = new DeletedItemsAdapter(getActivity(), getDeletedItems());
+        deletedItemsAdapter = new DeletedItemsAdapter(getActivity(), showDeletedItems.getDeletedItems());
         deletedItemsRecyclerView.setAdapter(deletedItemsAdapter);
     }
 
-    private Cursor getDeletedItems() {
-       return sqLiteDatabase.query(showDeletedItems.Table_Name,
-               null,
-               null,
-               null,
-               null,
-               null, showDeletedItems.Column_Name + " DESC");
-    }
 }

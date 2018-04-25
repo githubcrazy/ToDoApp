@@ -47,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sessionManager.setUser(true,editTextName.getText().toString());
                 ApiInterface apiInterface = ApiClientForPost.sendRequest().create(ApiInterface.class);
                 Call<PostData> call = apiInterface.postData(editTextName.getText().toString(),editTextJob.getText().toString());
                 call.enqueue(new Callback<PostData>() {
                     @Override
                     public void onResponse(Call<PostData> call, Response<PostData> response) {
                         PostData postData = response.body();
+                        sessionManager.setUser(true,postData.getName());
                         if(response.isSuccessful()) {
                             Intent intent = new Intent(MainActivity.this,NavDrawerActivity.class);
                             startActivity(intent);

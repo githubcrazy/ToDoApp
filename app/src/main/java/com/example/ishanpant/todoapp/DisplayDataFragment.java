@@ -53,15 +53,8 @@ public class DisplayDataFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewActivity);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-        dataAdapter = new DataAdapter(getActivity() , getReminders());
+        dataAdapter = new DataAdapter(getActivity() , sql.getReminders());
         recyclerView.setAdapter(dataAdapter);
     }
 
-    public Cursor getReminders() {
-        return db.query(sql.USER_TABLE,null,
-                null,
-                null,
-                null,
-                null,sql.COLUMN_NAME + " DESC");
-    }
 }

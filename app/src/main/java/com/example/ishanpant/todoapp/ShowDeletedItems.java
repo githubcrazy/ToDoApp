@@ -2,6 +2,7 @@ package com.example.ishanpant.todoapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -38,5 +39,15 @@ public class ShowDeletedItems extends SQLiteOpenHelper{
         contentValues.put(Column_Name,DeletedItemsName);
         sqLiteDatabase.insert(Table_Name,null,contentValues);
         sqLiteDatabase.close();
+    }
+
+    public Cursor getDeletedItems() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        return sqLiteDatabase.query(Table_Name,
+                null,
+                null,
+                null,
+                null,
+                null, Column_Id + " DESC");
     }
 }

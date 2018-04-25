@@ -39,4 +39,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
         long id = sqLiteDatabase.insert(USER_TABLE,null,values);
         sqLiteDatabase.close();
     }
+
+    public Cursor getReminders() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(USER_TABLE,null,
+                null,
+                null,
+                null,
+                null,COLUMN_ID + " DESC");
+    }
 }

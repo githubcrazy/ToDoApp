@@ -42,26 +42,38 @@ public class DeletedItemsAdapter extends RecyclerView.Adapter<DeletedItemsAdapte
 
         show = new ShowDeletedItems(context);
         db = show.getWritableDatabase();
-        holder.deletedItemsText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        long id = cursor.getLong(cursor.getColumnIndex(ShowDeletedItems.Column_Id));
-                        holder.deletedItemsText.setTag(id);
-                        removeDeletdItems(id , holder);
-                    }
-                });
-                alertDialog.show();
-            }
-        });
+        long id = cursor.getLong(cursor.getColumnIndex(ShowDeletedItems.Column_Id));
+        holder.itemView.setTag(id);
+
+//        holder.deletedItemsText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+//                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        removeDeletdItems(holder);
+//                    }
+//                });
+//                alertDialog.show();
+//            }
+//        });
     }
 
-    private void removeDeletdItems(long id,ViewHolder viewHolder) {
-        viewHolder.deletedItemsText.getTag();
-        db.delete(ShowDeletedItems.Table_Name, ShowDeletedItems.Column_Id + "=" + id, null);
+    private void removeDeletdItems(ViewHolder viewHolder) {
+        String whereArgs[] = {viewHolder.deletedItemsText.getText().toString()};
+        db.delete(ShowDeletedItems.Table_Name, ShowDeletedItems.Column_Name + "=?", whereArgs);
+        swapCursorForDeletedItems(show.getDeletedItems());
+    }
+
+    public void swapCursorForDeletedItems(Cursor newCursor) {
+        if (cursor != null) {
+            cursor.close();
+        }
+        cursor = newCursor;
+        if (newCursor != null) {
+            notifyDataSetChanged();
+        }
     }
     @Override
     public int getItemCount() {
