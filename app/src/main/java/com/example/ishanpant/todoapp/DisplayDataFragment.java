@@ -23,6 +23,8 @@ public class DisplayDataFragment extends Fragment {
     private FloatingActionButton fab;
     private SQLiteDatabase db;
     private SqliteHelper sql;
+    private ImageDataHelper imageDataHelper;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Nullable
     @Override
@@ -33,20 +35,22 @@ public class DisplayDataFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         sql = new SqliteHelper(getActivity());
+        imageDataHelper = new ImageDataHelper(getActivity());
         db = sql.getReadableDatabase();
+        sqLiteDatabase = imageDataHelper.getReadableDatabase();
         setUpRecyclerView(view);
         clickFloatingActionButton(view);
     }
 
     private void clickFloatingActionButton(View view) {
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+     /*   fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ToDoActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 
     private void setUpRecyclerView(View view) {
@@ -55,6 +59,10 @@ public class DisplayDataFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         dataAdapter = new DataAdapter(getActivity() , sql.getReminders());
         recyclerView.setAdapter(dataAdapter);
+    }
+
+    private Cursor getImages() {
+        return sqLiteDatabase.query(imageDataHelper.TABLE_NAME, null,null,null,null,null,null);
     }
 
 }

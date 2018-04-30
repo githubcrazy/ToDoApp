@@ -1,5 +1,6 @@
 package com.example.ishanpant.todoapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
     private void initializeComponents() {
         editTextName = (EditText) findViewById(R.id.edit_text_name);
         editTextJob = (EditText) findViewById(R.id.edit_text_job);
@@ -54,19 +61,28 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<PostData> call, Response<PostData> response) {
                         PostData postData = response.body();
                         sessionManager.setUser(true,postData.getName());
+                        displayProgress();
                         if(response.isSuccessful()) {
                             Intent intent = new Intent(MainActivity.this,NavDrawerActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<PostData> call, Throwable t) {
-
+                        t.printStackTrace();
                     }
                 });
 
             }
         });
+    }
+
+    private void displayProgress() {
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.show();
+        progress.setMessage("Getting Response...");
+
     }
 }

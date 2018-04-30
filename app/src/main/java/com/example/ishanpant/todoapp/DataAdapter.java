@@ -98,7 +98,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
             super(itemView);
             activityToBeDone = (TextView) itemView.findViewById(R.id.activity_to_be_done_text_view);
             toDoActivityCardView = (CardView) itemView.findViewById(R.id.to_do_activities_card_view);
-          /*  itemView.setOnLongClickListener(new View.OnLongClickListener() {
+           /* itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     removeItemsFromRecyclerView(getLayoutPosition());

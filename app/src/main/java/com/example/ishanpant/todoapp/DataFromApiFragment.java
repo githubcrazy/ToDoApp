@@ -1,13 +1,16 @@
 package com.example.ishanpant.todoapp;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,8 @@ public class DataFromApiFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Notes");
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         getImagesList = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -45,6 +50,7 @@ public class DataFromApiFragment extends Fragment {
         call.enqueue(new Callback<List<GetImages>>() {
             @Override
             public void onResponse(Call<List<GetImages>> call, Response<List<GetImages>> response) {
+                displayProgressDialog();
                 getImagesList = response.body();
                 recyclerViewAdapter.setData(getImagesList);
             }
@@ -56,5 +62,12 @@ public class DataFromApiFragment extends Fragment {
         });
 
 
+    }
+
+    private void displayProgressDialog() {
+        ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setMax(400);
+        progress.setMessage("Getting Images...");
+        progress.show();
     }
 }

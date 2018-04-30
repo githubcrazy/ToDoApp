@@ -23,7 +23,7 @@ public class SessionManager {
 
     public void setUser(boolean isLoggedIn, String name) {
         editor.putBoolean("loggedIn", isLoggedIn);
-        editor.putString("loggedIn",postData.getId());
+        editor.putString(KEY_NAME,name);
         editor.commit();
     }
 

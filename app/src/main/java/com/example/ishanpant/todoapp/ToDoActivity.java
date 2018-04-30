@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,20 +31,28 @@ public class ToDoActivity extends AppCompatActivity {
     private User user = new User();
     private SqliteHelper sqliteHelper;
     private SQLiteDatabase db;
-    ApplicationManager applicationManager = new ApplicationManager();
-    DisplayDataFragment displayDataFragment = new DisplayDataFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
-        editTextName = (EditText) findViewById(R.id.edit_text_name);
         sqliteHelper = new SqliteHelper(this);
-        post = (Button) findViewById(R.id.post_data);
+        Intent intent = getIntent();
+        ArrayList<String> data = intent.getStringArrayListExtra("data");
+        editTextName = (EditText) findViewById(R.id.add_a_note_text_view);
+        if (data != null) {
+            editTextName.setText(String.valueOf(data.get(0)));
+        }
+
+
+        post = (Button) findViewById(R.id.add_data_button);
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sqliteHelper.addActivityToBeDone(editTextName.getText().toString());
-                Toast.makeText(ToDoActivity.this,"Data added successfully...",Toast.LENGTH_LONG).show();
+                Toast.makeText(ToDoActivity.this, "Data added successfully...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ToDoActivity.this, NavDrawerActivity.class);
+                startActivity(intent);
             }
         });
     }
